@@ -1,6 +1,6 @@
 import numpy as np
-from mlcevaluator import mlcEvaluator
-from mlcevaluatorMTR import mlcEvaluatorMTR
+from mlcevaluator1 import mlcEvaluator1
+from mlcevaluator2 import mlcEvaluator2
 from sklearn.metrics import multilabel_confusion_matrix
 
 gt=np.asarray([[1,1,0], [1,1,1], [0,0,0],
@@ -12,10 +12,10 @@ pred=np.asarray([[1,1,0],[1,0,1],[0,0,0],
                  [0,1,1], [1,0,1], [0,0,1]])
 
 
-evalD=mlcEvaluator(gt, pred, use_unknown=True)
+evalD=mlcEvaluator1(gt, pred, use_unknown=True)
 MD=evalD.computeConfusionMatrix()
 
-evalO=mlcEvaluatorMTR(gt, pred)
+evalO=mlcEvaluator2(gt, pred)
 MO = evalO.computeConfusionMatrix()
 
 MS = multilabel_confusion_matrix(gt, pred)
