@@ -3,7 +3,7 @@ from mlcevaluator1 import mlcEvaluator1
 from mlcevaluator2 import mlcEvaluator2
 from sklearn.metrics import multilabel_confusion_matrix
 
-# Test GT and Prediction matrices
+# Example GT and Prediction matrices
 gt=np.asarray([[1,1,0], [1,1,1], [0,0,0],
                [1,0,0], [1,1,0], [0,0,0],
                [1,0,0], [1,1,0], [1,1,0]])
