@@ -82,6 +82,11 @@ class mlcEvaluator2:
         r = self.confusion_matrix.diagonal()/self.confusion_matrix.sum(axis=1)
         return r
 
+    def getInstanceContribution(self, i):
+        g = self.gt[:,i]
+        p = self.pred[:,i]
+        return self.getContribution(g, p)
+
     def getOneVsRest(self):
         vvr = np.zeros((self.q, 2, 2))
         vvr[:,1,1] = self.confusion_matrix.diagonal()

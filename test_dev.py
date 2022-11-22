@@ -12,51 +12,54 @@ pred=np.asarray([[1,1,0],[1,0,1],[0,0,0],
                  [0,1,1], [1,0,1], [0,0,1]])
 
 
+# Evaluator1, using category unknown
 evalD=mlcEvaluator1(gt, pred, use_unknown=True)
 MD=evalD.computeConfusionMatrix()
 
+# Evaluator1, without category unknown
+evalD1=mlcEvaluator1(gt, pred, use_unknown=False)
+MD1=evalD1.computeConfusionMatrix()
+
+# Evaluator 2
 evalO=mlcEvaluator2(gt, pred)
 MO = evalO.computeConfusionMatrix()
 
-MS = multilabel_confusion_matrix(gt, pred)
-
-
 # DEV
-g=gt[0,:]
-p=pred[0,:]
-evalO.getContribution(g, p)
+# Compute contribution of a particular data instance
 
-MOS[:,1,1] = MO.diagonal()
-MOS[:,0,0] = MOS[:,1,1].sum() - MOS[:,1,1] 
-MOS[:,0,1] = MO.sum(axis=0) - MOS[:,1,1]
-MOS[:,1,0] = MO.sum(axis=1) - MOS[:,1,1]
 
-'''
->>> MD
-array([[4.        , 0.83333333, 2.16666667, 0.        ],
-       [0.5       , 1.66666667, 2.83333333, 0.        ],
-       [0.        , 0.        , 1.        , 0.        ],
-       [0.        , 0.5       , 0.5       , 1.        ]])
->>> 
->>> MO
-array([[5., 2., 4., 0.],
-       [0., 2., 3., 1.],
-       [0., 0., 1., 0.],
-       [0., 1., 1., 1.]])
->>> 
->>> MS
-array([[[2, 0],
-        [2, 5]],
+# Contribution of the instance 0
+# g=[1,1,0]; p=[1,1,0]
+# CATEGORY: (i) in [1], (I) in [2] 
+evalD1.getInstanceContribution(0)
+evalD.getInstanceContribution(0)
+evalO.getInstanceContribution(0)
 
-       [[1, 3],
-        [3, 2]],
+# Contribution of the instance 1
+# g=[1,1,1]; p=[1,0,1]
+# CATEGORY: (iii) in [1], (I) in [2] 
+evalD1.getInstanceContribution(1)
+evalD.getInstanceContribution(1)
+evalO.getInstanceContribution(1)
 
-       [[2, 6],
-        [0, 1]]])
->>>
->>> MSS
-array([[5, 9],
-       [5, 8]])
->>> 
-'''
+# Contribution of the instance 2
+# g=[0,0,0]; p=[0,0,0]
+# CATEGORY: (i) in [1], (I) in [2] 
+evalD1.getInstanceContribution(2)
+evalD.getInstanceContribution(2)
+evalO.getInstanceContribution(2)
+
+# Contribution of the instance 5
+# g=[0,0,0]; p=[0,1,1]
+# CATEGORY: (ii) in [1], (II) in [2] 
+evalD1.getInstanceContribution(5)
+evalD.getInstanceContribution(5)
+evalO.getInstanceContribution(5)
+
+# Contribution of the instance 7
+# g=[1,1,0]; p=[1,0,1]
+# CATEGORY: (iv) in [1], (III) in [2] 
+evalD1.getInstanceContribution(7)
+evalD.getInstanceContribution(7)
+evalO.getInstanceContribution(7)
 

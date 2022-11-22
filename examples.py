@@ -3,6 +3,7 @@ from mlcevaluator1 import mlcEvaluator1
 from mlcevaluator2 import mlcEvaluator2
 from sklearn.metrics import multilabel_confusion_matrix
 
+# Test GT and Prediction matrices
 gt=np.asarray([[1,1,0], [1,1,1], [0,0,0],
                [1,0,0], [1,1,0], [0,0,0],
                [1,0,0], [1,1,0], [1,1,0]])
@@ -12,24 +13,19 @@ pred=np.asarray([[1,1,0],[1,0,1],[0,0,0],
                  [0,1,1], [1,0,1], [0,0,1]])
 
 
+# Evaluator1, using category unknown
 evalD=mlcEvaluator1(gt, pred, use_unknown=True)
 MD=evalD.computeConfusionMatrix()
 
+# Evaluator1, without category unknown
+evalD1=mlcEvaluator1(gt, pred, use_unknown=False)
+MD1=evalD1.computeConfusionMatrix()
+
+# Evaluator 2
 evalO=mlcEvaluator2(gt, pred)
 MO = evalO.computeConfusionMatrix()
 
 MS = multilabel_confusion_matrix(gt, pred)
-
-
-# Testiranje - razvoj
-g=gt[:,0]
-p=pred[:,0]
-evalO.getContribution(g, p)
-
-MOS[:,1,1] = MO.diagonal()
-MOS[:,0,0] = MOS[:,1,1].sum() - MOS[:,1,1] 
-MOS[:,0,1] = MO.sum(axis=0) - MOS[:,1,1]
-MOS[:,1,0] = MO.sum(axis=1) - MOS[:,1,1]
 
 '''
 >>> MD
