@@ -9,10 +9,10 @@
 #
 import numpy as np
 
-class mlcEvaluator1:
+class mlcTensor:
     def __init__(self, gt=None, pred=None, use_unknown=True):
         self.use_unknown = use_unknown
-        self.confusion_matrix = None
+        self.confusion_tensor = None
         
         if gt is not None:
             self.setTrueLabels(gt)
@@ -47,60 +47,84 @@ class mlcEvaluator1:
         mu[h,:] = (np.sum(mu, axis=0) == 0).astype(float)
         return mu
     
-    def getContribution(self, g, p):
-        if np.array_equal(g, p):
-            return np.diag(g)
+    
+    def getContribution2(self, t, p):
+        tc = np.sum(t)
+        pc = np.sum(p)
+        t1=np.logical_and(t, p).astype(t.dtype) # p1=t1
         
-        gc = np.sum(g)
+        t2 = t-t1
+        p2 = p-t1
+        
+        CR = np.diag(t1) + np.outer(t2, p)/pc 
+        CP = np.diag(t1) + np.outer(t, p2)/tc
+        return np.stack((CR, CP))
+        
+    def getContribution1(self, t, p):
+        C = np.zeros((2, self.q, self.q))
+
+        tc = np.sum(t)
         pc = np.sum(p)
         
-        d=np.logical_and(g, p).astype(g.dtype)
+        t1=np.logical_and(t, p).astype(t.dtype) # p1=t1
         
-        gd = g-d
-        pd = p-d
+        t2 = t-t1
+        p2 = p-t1
         
-        gdc = np.sum(gd)
-        pdc = np.sum(pd)
+        t2c = np.sum(t2)
+        p2c = np.sum(p2)
+
+        CR = C[0,:,:]
+        CP = C[1,:,:]
         
-        if gdc == 0:
-            gd += d
-            C = (np.outer(gd, pd) + gc*np.diag(d))/pc
-        elif pdc == 0:
-            pd += d
-            C = np.outer(gd, pd)/pc + np.diag(d)
+        CR += np.diag(t1)
+        CP += np.diag(t1)
+        if np.array_equal(t, p):
+            return C
+        
+        if t2c == 0 and p2c > 0:
+            CP += np.outer(t, p2)/tc
+        elif t2c > 0 and p2c == 0:
+            CR += np.outer(t2, p)/pc
         else:
-            C = np.outer(gd, pd)/pdc + np.diag(d)
-            
+            CR += np.outer(t2, p2)/p2c
+            CP += np.outer(t2, p2)/t2c
+
         return C
 
-    def computeConfusionMatrix(self, gt=None, pred=None):
+    def computeConfusionTensor(self, gt=None, pred=None, unique=False):
         if gt is not None:
             self.setTrueLabels(gt)
         if pred is not None:
             self.setPredictedLabels(pred)
+
+        if unique:
+            contribution_func = self.getContribution2
+        else:
+            contribution_func = self.getContribution1
             
-        self.confusion_matrix = np.zeros((self.q,self.q))
+        self.confusion_tensor = np.zeros((2, self.q,self.q))
         nsamples = self.gt.shape[1]
         for k in range(nsamples):
             g = self.gt[:,k]
             p = self.pred[:,k]
-            self.confusion_matrix += self.getContribution(g, p)
+            self.confusion_tensor += contribution_func(g, p)
 
-        return self.confusion_matrix
+        return self.confusion_tensor
     
     def getConfusionMatrix(self):
         return self.confusion_matrix
 
-    def getRowNormalized(self):
-        R = self.confusion_matrix.copy()
+    def getRecall(self):
+        R = self.confusion_tensor[0,:,:].copy()
         s = R.sum(axis=1)
         for k in range(R.shape[0]):
             if s[k]>0:
                 R[k,:] = R[k,:]/s[k]
         return R
 
-    def getColumnNormalized(self):
-        P = self.confusion_matrix.copy()
+    def getPrecision(self):
+        P = self.confusion_tensor[1,:,:].copy()
         s = P.sum(axis=0)
         for k in range(P.shape[1]):
             if s[k]>0:

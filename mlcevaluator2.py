@@ -1,3 +1,11 @@
+#
+# Multi-Label Confusion Matrix
+# as proposed by Heydarian et al.
+#
+# Mohammadreza Heydarian, Thomas E. Doyle and Reza Samavi, "MLCM:
+#Multi-Label Confusion Matrix," in IEEE Access, vol. 10, pp. 19083-
+#19095, 2022, doi: 10.1109/ACCESS.2022.3151048.
+#
 import numpy as np
 
 class mlcEvaluator2:
@@ -69,6 +77,22 @@ class mlcEvaluator2:
     
     def getConfusionMatrix(self):
         return self.confusion_matrix
+
+    def getRowNormalized(self):
+        R = self.confusion_matrix.copy()
+        s = R.sum(axis=1)
+        for k in range(R.shape[0]):
+            if s[k]>0:
+                R[k,:] = R[k,:]/s[k]
+        return R
+
+    def getColumnNormalized(self):
+        P = self.confusion_matrix.copy()
+        s = P.sum(axis=0)
+        for k in range(P.shape[1]):
+            if s[k]>0:
+                P[:,k] = P[:,k]/s[k]
+        return P
     
     def getPrecisionByClass(self):
         if self.confusion_matrix is None:
