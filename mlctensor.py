@@ -92,7 +92,7 @@ class mlcTensor:
 
         return C
 
-    def computeConfusionTensor(self, gt=None, pred=None, unique=False):
+    def computeConfusionTensor(self, gt=None, pred=None, unique=True):
         if gt is not None:
             self.setTrueLabels(gt)
         if pred is not None:
