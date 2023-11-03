@@ -3,8 +3,8 @@
 Implementations of Multi Label Confusion Tensor for Multi Label Classifier performance evaluation
 
 ## Files
-- [Evaluate_Multi-Label-movies.ipynb](Evaluate_Multi-Label-movies.ipynb): Evaluate Movie Posters classifier using all three Confusion-based evaluators
-- [Evaluate_Multi-Label-syntetic.ipynb](Evaluate_Multi-Label-syntetic.ipynb): Evaluate syntetic example using all three Confusion-based evaluators 
+- [Evaluate_Multi-Label-movies.ipynb](Evalute_Multi-Label-movies.ipynb): Evaluate Movie Posters classifier using all three Confusion-based evaluators
+- [Evaluate_Multi-Label-syntetic.ipynb](Evalute_Multi-Label-syntetic.ipynb): Evaluate syntetic example using all three Confusion-based evaluators 
 - [Micro-Macro_averaging.ipynb](Micro-Macro_averaging.ipynb): Computing Label-based evaluation metrics from MLCT 
 - [mlctensor.py](mlctensor.py): Implementation of Multi Label Confusion Tensor (MLCT)
 - [mlcevaluator1.py](mlcevaluator1.py): Implementation of Multi Label Confusion Matrix (MLCM) as proposed by Krstinic et al. [[1]](#1)
