@@ -1,14 +1,11 @@
 #
-# Multi-Label Confusion Matrix
+# Multi-Label Confusion Tensor
 # as proposed by Krstinic et al.
 #
-# Damir Krstinić, Maja Braović, Ljiljana Šerić, Dunja Božić-Štulić, "Multi-
-# label classifier performance evaluation with confusion matrix", in Proc.of
-# Int.Conf. on Soft Computing, Artificial Intelligence and Machine Learning
-# (SAIM2020), vol. 10, pp. 1-14., 2020. doi: 10.5121/csit.2020.100801 
 #
 import numpy as np
 
+# Set use_unknown to False to compute confusion tensor without the additional class "unknown" 
 class mlcTensor:
     def __init__(self, gt=None, pred=None, use_unknown=True):
         self.use_unknown = use_unknown
@@ -91,7 +88,8 @@ class mlcTensor:
             CP += np.outer(t2, p2)/t2c
 
         return C
-
+    # Set unique to False to compute contribution to Confusion Tensor differently 
+    # for different patterns of True and Predicted labels
     def computeConfusionTensor(self, gt=None, pred=None, unique=True):
         if gt is not None:
             self.setTrueLabels(gt)
